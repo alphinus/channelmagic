@@ -11,7 +11,7 @@ import { Wand2, Wrench, Check } from "lucide-react";
 
 export default function ModeSelectionPage() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, tArray } = useTranslation();
   const { setCurrentStep } = useWizardStore();
   const { mode, setMode } = useAppStore();
 
@@ -77,7 +77,7 @@ export default function ModeSelectionPage() {
 
             {/* Features */}
             <div className="space-y-3 mb-6">
-              {(t("wizard.step4.auto.features") as unknown as string[]).map(
+              {tArray("wizard.step4.auto.features").map(
                 (feature, index) => (
                   <div key={index} className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
@@ -140,7 +140,7 @@ export default function ModeSelectionPage() {
 
             {/* Features */}
             <div className="space-y-3 mb-6">
-              {(t("wizard.step4.diy.features") as unknown as string[]).map(
+              {tArray("wizard.step4.diy.features").map(
                 (feature, index) => (
                   <div key={index} className="flex items-start gap-2">
                     <Check className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />

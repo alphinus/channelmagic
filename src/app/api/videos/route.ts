@@ -26,7 +26,14 @@ export async function GET(request: NextRequest) {
     const { data, error } = await query;
 
     if (error) throw error;
-    return NextResponse.json(data);
+
+    // Map data to include topic field (fallback to title for backwards compatibility)
+    const mappedData = (data || []).map(video => ({
+      ...video,
+      topic: video.topic || video.title || 'Untitled',
+    }));
+
+    return NextResponse.json(mappedData);
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch videos' }, { status: 500 });
   }

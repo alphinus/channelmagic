@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppStore } from "@/store/app-store";
 import { useProjectStore } from "@/store/project-store";
@@ -28,25 +28,30 @@ function VideoPageContent() {
   const searchParams = useSearchParams();
   const { t } = useTranslation();
   const { mode, apiKeys } = useAppStore();
-  const { currentProject, diyChecklist, setDiyChecklistItem } = useProjectStore();
+  const { currentProject, diyChecklist, setDiyChecklistItem, updateInDatabase, setStatus } = useProjectStore();
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [videoId, setVideoId] = useState<string | null>(null);
   const [videoStatus, setVideoStatus] = useState<string | null>(null);
   const [videoUrl, setVideoUrl] = useState<string | null>(null);
   const [error, setError] = useState("");
-  const [pollingInterval, setPollingInterval] = useState<NodeJS.Timeout | null>(null);
+
+  // Use ref to prevent multiple polling intervals
+  const pollingRef = useRef<NodeJS.Timeout | null>(null);
+  const isPollingRef = useRef(false);
 
   const script = currentProject?.script?.fullText || searchParams.get("script") || "";
 
   // Cleanup polling on unmount
   useEffect(() => {
     return () => {
-      if (pollingInterval) {
-        clearInterval(pollingInterval);
+      if (pollingRef.current) {
+        clearInterval(pollingRef.current);
+        pollingRef.current = null;
+        isPollingRef.current = false;
       }
     };
-  }, [pollingInterval]);
+  }, []);
 
   const handleGenerateVideo = async () => {
     if (!script) {
@@ -85,6 +90,19 @@ function VideoPageContent() {
   };
 
   const startPolling = (vId: string) => {
+    // Prevent multiple polling intervals
+    if (isPollingRef.current) {
+      console.log('Polling already active, skipping');
+      return;
+    }
+
+    // Clear any existing interval
+    if (pollingRef.current) {
+      clearInterval(pollingRef.current);
+    }
+
+    isPollingRef.current = true;
+
     const interval = setInterval(async () => {
       try {
         const response = await fetch(
@@ -101,20 +119,26 @@ function VideoPageContent() {
         if (data.status.status === "completed") {
           setVideoUrl(data.status.video_url);
           setIsGenerating(false);
-          clearInterval(interval);
-          setPollingInterval(null);
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+          isPollingRef.current = false;
         } else if (data.status.status === "failed") {
           setError("Video-Generierung fehlgeschlagen");
           setIsGenerating(false);
-          clearInterval(interval);
-          setPollingInterval(null);
+          if (pollingRef.current) {
+            clearInterval(pollingRef.current);
+            pollingRef.current = null;
+          }
+          isPollingRef.current = false;
         }
       } catch (err) {
         console.error("Polling error:", err);
       }
     }, 5000); // Poll every 5 seconds
 
-    setPollingInterval(interval);
+    pollingRef.current = interval;
   };
 
   const handleDownload = () => {
@@ -123,7 +147,13 @@ function VideoPageContent() {
     }
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
+    // Save video status to database
+    setStatus("video");
+    await updateInDatabase({
+      video_url: videoUrl,
+      status: "video",
+    });
     router.push("/create/thumbnail");
   };
 

@@ -1,23 +1,47 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store/app-store";
 import { useWizardStore } from "@/store/wizard-store";
 import { Button } from "@/components/ui/button";
 import { platforms } from "@/lib/platforms/config";
-import { CheckCircle2, Sparkles, LayoutDashboard } from "lucide-react";
+import { CheckCircle2, Sparkles, LayoutDashboard, Loader2 } from "lucide-react";
 
 export default function WizardReady() {
   const router = useRouter();
   const { mode } = useAppStore();
-  const { channel, strategy, platforms: selectedPlatforms } = useWizardStore();
+  const { channel, strategy, platforms: selectedPlatforms, saveChannelToDatabase, setComplete } = useWizardStore();
+  const [saving, setSaving] = useState(false);
 
-  const handleCreateVideo = () => {
-    router.push("/create");
+  const handleCreateVideo = async () => {
+    setSaving(true);
+    try {
+      // Save channel to database
+      await saveChannelToDatabase();
+      setComplete(true);
+      router.push("/create");
+    } catch (error) {
+      console.error('Error saving channel:', error);
+      // Still navigate even if save fails (data in localStorage)
+      router.push("/create");
+    } finally {
+      setSaving(false);
+    }
   };
 
-  const handleDashboard = () => {
-    router.push("/dashboard");
+  const handleDashboard = async () => {
+    setSaving(true);
+    try {
+      await saveChannelToDatabase();
+      setComplete(true);
+      router.push("/dashboard");
+    } catch (error) {
+      console.error('Error saving channel:', error);
+      router.push("/dashboard");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const modeLabel = mode === "auto" ? "Automatisch" : "DIY";
@@ -156,14 +180,20 @@ export default function WizardReady() {
           <div className="space-y-3">
             <Button
               onClick={handleCreateVideo}
+              disabled={saving}
               className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-lg py-6"
             >
-              <Sparkles className="w-5 h-5 mr-2" />
+              {saving ? (
+                <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+              ) : (
+                <Sparkles className="w-5 h-5 mr-2" />
+              )}
               Erstes Video erstellen
             </Button>
 
             <Button
               onClick={handleDashboard}
+              disabled={saving}
               variant="outline"
               className="w-full border-zinc-700 hover:border-zinc-600 py-6"
             >

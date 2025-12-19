@@ -45,6 +45,9 @@ interface ProjectState {
   // Current project being worked on
   currentProject: Project | null;
 
+  // Database ID (separate from local id)
+  videoId: string | null;
+
   // Project actions
   createProject: (topic: string, platforms: Platform[]) => void;
   updateProject: (data: Partial<Project>) => void;
@@ -54,6 +57,11 @@ interface ProjectState {
     data: Partial<PlatformContent>
   ) => void;
   setStatus: (status: ProjectStatus) => void;
+
+  // Database sync
+  setVideoId: (id: string | null) => void;
+  saveToDatabase: () => Promise<string | null>;
+  updateInDatabase: (data: Record<string, unknown>) => Promise<boolean>;
 
   // DIY mode checklist
   diyChecklist: {
@@ -86,6 +94,7 @@ export const useProjectStore = create<ProjectState>()(
   persist(
     (set, get) => ({
       currentProject: null,
+      videoId: null,
       diyChecklist: initialDiyChecklist,
 
       createProject: (topic, platforms) => {
@@ -105,7 +114,57 @@ export const useProjectStore = create<ProjectState>()(
           createdAt: now,
           updatedAt: now,
         };
-        set({ currentProject: project, diyChecklist: initialDiyChecklist });
+        set({ currentProject: project, videoId: null, diyChecklist: initialDiyChecklist });
+      },
+
+      setVideoId: (id) => set({ videoId: id }),
+
+      saveToDatabase: async () => {
+        const state = get();
+        if (!state.currentProject) return null;
+
+        try {
+          const response = await fetch('/api/videos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              title: state.currentProject.topic,
+              topic: state.currentProject.topic,
+              status: state.currentProject.status,
+              platforms: state.currentProject.platformContent.map(p => p.platform),
+            }),
+          });
+
+          if (!response.ok) {
+            console.error('Failed to save video');
+            return null;
+          }
+
+          const data = await response.json();
+          set({ videoId: data.id });
+          return data.id;
+        } catch (error) {
+          console.error('Error saving video:', error);
+          return null;
+        }
+      },
+
+      updateInDatabase: async (data) => {
+        const state = get();
+        if (!state.videoId) return false;
+
+        try {
+          const response = await fetch(`/api/videos/${state.videoId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          });
+
+          return response.ok;
+        } catch (error) {
+          console.error('Error updating video:', error);
+          return false;
+        }
       },
 
       updateProject: (data) =>
@@ -171,6 +230,7 @@ export const useProjectStore = create<ProjectState>()(
       clearCurrentProject: () =>
         set({
           currentProject: null,
+          videoId: null,
           diyChecklist: initialDiyChecklist,
         }),
     }),

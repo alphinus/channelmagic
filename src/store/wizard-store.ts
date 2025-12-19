@@ -52,6 +52,11 @@ interface WizardState {
   isComplete: boolean;
   setComplete: (complete: boolean) => void;
 
+  // Database sync
+  channelId: string | null;
+  setChannelId: (id: string | null) => void;
+  saveChannelToDatabase: () => Promise<string | null>;
+
   // Navigation helpers
   canProceed: (step: number) => boolean;
   getProgress: () => number;
@@ -74,6 +79,7 @@ const initialState = {
   },
   platforms: [] as Platform[],
   isComplete: false,
+  channelId: null as string | null,
 };
 
 export const useWizardStore = create<WizardState>()(
@@ -106,6 +112,34 @@ export const useWizardStore = create<WizardState>()(
         }),
 
       setComplete: (complete) => set({ isComplete: complete }),
+
+      setChannelId: (id) => set({ channelId: id }),
+
+      saveChannelToDatabase: async () => {
+        const state = get();
+        try {
+          const response = await fetch('/api/channels', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: state.channel.name,
+              description: state.channel.targetAudience || null,
+            }),
+          });
+
+          if (!response.ok) {
+            console.error('Failed to save channel');
+            return null;
+          }
+
+          const data = await response.json();
+          set({ channelId: data.id });
+          return data.id;
+        } catch (error) {
+          console.error('Error saving channel:', error);
+          return null;
+        }
+      },
 
       canProceed: (step) => {
         const state = get();

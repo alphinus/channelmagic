@@ -18,7 +18,8 @@ import {
   ArrowRight,
   PlayCircle,
   FileText,
-  Loader2
+  Loader2,
+  LogOut
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -26,7 +27,7 @@ import { toast } from "sonner";
 interface VideoProject {
   id: string;
   topic: string;
-  status: 'draft' | 'processing' | 'ready' | 'published';
+  status: string;
   thumbnail_url?: string;
   platforms: string[];
   created_at: string;
@@ -81,6 +82,23 @@ export default function DashboardPage() {
     router.push(`/dashboard/videos/${id}`);
   };
 
+  const handleLogout = async () => {
+    try {
+      const response = await fetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      if (response.ok) {
+        router.push('/auth/login');
+      } else {
+        toast.error('Logout fehlgeschlagen');
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+      toast.error('Logout fehlgeschlagen');
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 to-black text-white">
       {/* Header */}
@@ -96,6 +114,15 @@ export default function DashboardPage() {
             <Button variant="ghost" size="sm" className="gap-2">
               <Settings className="w-4 h-4" />
               {t('dashboard.settings')}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-2 text-red-400 hover:text-red-300 hover:bg-red-500/10"
+              onClick={handleLogout}
+            >
+              <LogOut className="w-4 h-4" />
+              Logout
             </Button>
           </div>
         </div>

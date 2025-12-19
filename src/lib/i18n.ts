@@ -16,12 +16,12 @@ type TranslationKey = NestedKeyOf<typeof de>;
 export function useTranslation() {
   const locale = useAppStore((state) => state.locale);
 
-  const t = (key: string, params?: Record<string, string | number>) => {
+  const t = (key: string, params?: Record<string, string | number>): string => {
     const keys = key.split('.');
-    let value: any = messages[locale];
+    let value: unknown = messages[locale];
 
     for (const k of keys) {
-      value = value?.[k];
+      value = (value as Record<string, unknown>)?.[k];
     }
 
     if (typeof value !== 'string') return key;
@@ -33,5 +33,21 @@ export function useTranslation() {
     return value;
   };
 
-  return { t, locale };
+  // New function to get arrays from translations
+  const tArray = (key: string): string[] => {
+    const keys = key.split('.');
+    let value: unknown = messages[locale];
+
+    for (const k of keys) {
+      value = (value as Record<string, unknown>)?.[k];
+    }
+
+    if (Array.isArray(value)) {
+      return value;
+    }
+
+    return [];
+  };
+
+  return { t, tArray, locale };
 }

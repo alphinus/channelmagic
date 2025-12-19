@@ -10,7 +10,7 @@ import { Wand2, Wrench, Youtube, Check } from "lucide-react";
 
 export default function Home() {
   const router = useRouter();
-  const { t } = useTranslation();
+  const { t, tArray } = useTranslation();
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-zinc-900 via-zinc-900 to-black text-white">
@@ -139,7 +139,7 @@ export default function Home() {
               </div>
 
               <div className="space-y-2 mb-6">
-                {(t("wizard.step4.auto.features") as unknown as string[]).slice(0, 3).map(
+                {tArray("wizard.step4.auto.features").slice(0, 3).map(
                   (feature, index) => (
                     <div key={index} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-purple-400 shrink-0 mt-0.5" />
@@ -177,7 +177,7 @@ export default function Home() {
               </div>
 
               <div className="space-y-2 mb-6">
-                {(t("wizard.step4.diy.features") as unknown as string[]).slice(0, 3).map(
+                {tArray("wizard.step4.diy.features").slice(0, 3).map(
                   (feature, index) => (
                     <div key={index} className="flex items-start gap-2">
                       <Check className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />

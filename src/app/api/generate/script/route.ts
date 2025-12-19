@@ -1,8 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { createSupabaseServerClient } from '@/lib/db/server-client';
 import { generateScript, type ScriptGenerationParams } from '@/lib/services/openrouter';
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth check
+    const supabase = await createSupabaseServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const body = await request.json();
     const { apiKey, ...params } = body;
 

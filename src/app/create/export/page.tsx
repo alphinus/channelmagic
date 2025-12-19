@@ -33,7 +33,7 @@ import type { Platform } from "@/store/wizard-store";
 function ExportPageContent() {
   const router = useRouter();
   const { t } = useTranslation();
-  const { currentProject, updatePlatformContent, setStatus } = useProjectStore();
+  const { currentProject, updatePlatformContent, setStatus, updateInDatabase } = useProjectStore();
 
   const [copiedField, setCopiedField] = useState<string | null>(null);
   const [checklist, setChecklist] = useState<Record<string, boolean>>({});
@@ -54,15 +54,29 @@ function ExportPageContent() {
     setChecklist((prev) => ({ ...prev, [itemId]: checked }));
   };
 
-  const handleMarkAsPublished = (platform: Platform) => {
+  const handleMarkAsPublished = async (platform: Platform) => {
+    const publishedAt = new Date().toISOString();
+
+    // Update local store
     updatePlatformContent(platform, {
       published: true,
-      publishedAt: new Date().toISOString(),
+      publishedAt,
+    });
+
+    // Sync to database
+    await updateInDatabase({
+      status: "published",
     });
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     setStatus("ready");
+
+    // Save final status to database
+    await updateInDatabase({
+      status: "ready",
+    });
+
     router.push("/dashboard");
   };
 

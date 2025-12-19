@@ -41,7 +41,7 @@ function ReviewPageContent() {
   const router = useRouter();
   const { t } = useTranslation();
   const { mode } = useAppStore();
-  const { currentProject, updatePlatformContent, setStatus } = useProjectStore();
+  const { currentProject, updatePlatformContent, setStatus, updateInDatabase } = useProjectStore();
 
   const [editedContent, setEditedContent] = useState<
     Record<Platform, { title: string; description: string; hashtags: string[] }>
@@ -162,8 +162,14 @@ function ReviewPageContent() {
     setStatus("review");
   };
 
-  const handleNext = () => {
+  const handleNext = async () => {
     handleSave();
+
+    // Save review status to database
+    await updateInDatabase({
+      status: "review",
+    });
+
     router.push("/create/export");
   };
 

@@ -4,6 +4,7 @@ import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppStore } from "@/store/app-store";
 import { useWizardStore } from "@/store/wizard-store";
+import { useProjectStore } from "@/store/project-store";
 import { useTranslation } from "@/lib/i18n";
 import { generateScriptPrompt } from "@/lib/templates/script-prompts";
 import { Button } from "@/components/ui/button";
@@ -18,6 +19,7 @@ function ScriptPageContent() {
   const { t, locale } = useTranslation();
   const { mode } = useAppStore();
   const { channel, strategy, platforms } = useWizardStore();
+  const { setScript: saveScriptToStore, updateInDatabase, setStatus } = useProjectStore();
 
   const topic = searchParams.get("topic") || "";
   const isDIY = searchParams.get("diy") === "true";
@@ -103,9 +105,29 @@ function ScriptPageContent() {
     }
   };
 
-  const handleNext = () => {
-    // TODO: Navigate to video creation page
-    router.push("/dashboard");
+  const handleNext = async () => {
+    // Save script to store and database
+    if (script) {
+      const scriptData = {
+        hook: "",
+        intro: "",
+        mainPoints: [],
+        callToAction: "",
+        outro: "",
+        fullText: script,
+      };
+      saveScriptToStore(scriptData);
+      setStatus("script");
+
+      // Update in database
+      await updateInDatabase({
+        script,
+        status: "script",
+      });
+    }
+
+    // Navigate to video creation page
+    router.push("/create/video");
   };
 
   return (

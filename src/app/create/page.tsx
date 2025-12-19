@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAppStore } from "@/store/app-store";
 import { useWizardStore } from "@/store/wizard-store";
+import { useProjectStore } from "@/store/project-store";
 import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,20 +17,38 @@ export default function CreatePage() {
   const router = useRouter();
   const { t } = useTranslation();
   const { mode } = useAppStore();
-  const { channel, strategy } = useWizardStore();
+  const { channel, strategy, platforms: selectedPlatforms } = useWizardStore();
+  const { createProject, saveToDatabase } = useProjectStore();
   const [topic, setTopic] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
     if (!topic.trim()) return;
 
-    if (mode === "auto") {
-      // Auto-Mode: Navigate to script page with topic as query param
-      setIsGenerating(true);
-      router.push(`/create/script?topic=${encodeURIComponent(topic)}`);
-    } else {
-      // DIY-Mode: Navigate to script page to show prompt
-      router.push(`/create/script?topic=${encodeURIComponent(topic)}&diy=true`);
+    setIsGenerating(true);
+
+    try {
+      // Create project in store
+      createProject(topic.trim(), selectedPlatforms);
+
+      // Save to database and wait for videoId
+      const videoId = await saveToDatabase();
+
+      if (!videoId) {
+        console.error('Failed to save project to database');
+        // Still proceed - localStorage will have the data
+      }
+
+      if (mode === "auto") {
+        // Auto-Mode: Navigate to script page with topic as query param
+        router.push(`/create/script?topic=${encodeURIComponent(topic)}`);
+      } else {
+        // DIY-Mode: Navigate to script page to show prompt
+        router.push(`/create/script?topic=${encodeURIComponent(topic)}&diy=true`);
+      }
+    } catch (error) {
+      console.error('Error creating project:', error);
+      setIsGenerating(false);
     }
   };
 

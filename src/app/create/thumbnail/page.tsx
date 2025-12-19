@@ -30,7 +30,7 @@ function ThumbnailPageContent() {
   const router = useRouter();
   const { t } = useTranslation();
   const { mode } = useAppStore();
-  const { currentProject, diyChecklist, setDiyChecklistItem } = useProjectStore();
+  const { currentProject, diyChecklist, setDiyChecklistItem, updateInDatabase, setStatus } = useProjectStore();
 
   const [thumbnailPrompt, setThumbnailPrompt] = useState("");
   const [customPrompt, setCustomPrompt] = useState("");
@@ -87,9 +87,14 @@ The thumbnail should immediately grab attention and make viewers want to click.`
     }
   };
 
-  const handleNext = () => {
-    // TODO: Navigate to review page
-    router.push("/dashboard");
+  const handleNext = async () => {
+    // Save thumbnail status to database
+    setStatus("thumbnail");
+    await updateInDatabase({
+      thumbnail_url: thumbnailPreview,
+      status: "thumbnail",
+    });
+    router.push("/create/review");
   };
 
   const canProceed = mode === "auto"

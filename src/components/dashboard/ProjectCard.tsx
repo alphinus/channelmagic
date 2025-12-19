@@ -19,7 +19,7 @@ import { de } from 'date-fns/locale';
 interface ProjectCardProps {
   id: string;
   topic: string;
-  status: 'draft' | 'processing' | 'ready' | 'published';
+  status: string;
   thumbnailUrl?: string;
   platforms: string[];
   createdAt: string;
@@ -27,10 +27,26 @@ interface ProjectCardProps {
   onDelete: () => void;
 }
 
-const STATUS_CONFIG = {
+const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   draft: {
     label: 'Entwurf',
     color: 'bg-zinc-500/20 text-zinc-400 border-zinc-500/30',
+  },
+  script: {
+    label: 'Script erstellt',
+    color: 'bg-yellow-500/20 text-yellow-400 border-yellow-500/30',
+  },
+  video: {
+    label: 'Video erstellt',
+    color: 'bg-orange-500/20 text-orange-400 border-orange-500/30',
+  },
+  thumbnail: {
+    label: 'Thumbnail erstellt',
+    color: 'bg-purple-500/20 text-purple-400 border-purple-500/30',
+  },
+  review: {
+    label: 'In Review',
+    color: 'bg-indigo-500/20 text-indigo-400 border-indigo-500/30',
   },
   processing: {
     label: 'In Bearbeitung',
@@ -69,8 +85,8 @@ export function ProjectCard({
   const { t } = useTranslation();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
-  const statusConfig = STATUS_CONFIG[status];
-  const isDraft = status === 'draft';
+  const statusConfig = STATUS_CONFIG[status] || STATUS_CONFIG.draft;
+  const isDraft = status === 'draft' || status === 'script' || status === 'video' || status === 'thumbnail' || status === 'review';
   const isReadyOrPublished = status === 'ready' || status === 'published';
 
   const formattedDate = format(new Date(createdAt), 'dd. MMM yyyy', {

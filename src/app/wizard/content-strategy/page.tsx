@@ -226,7 +226,7 @@ export default function ContentStrategyPage() {
           <WizardNavigation
             backHref="/wizard/channel-setup"
             onBack={handleBack}
-            nextHref="/wizard/step-3"
+            nextHref="/wizard/platforms"
             onNext={handleNext}
             nextDisabled={!isValid}
           />
