@@ -255,5 +255,35 @@
       "cta": "Speichern & Registrieren",
       "skip": "Später"
     }
+  },
+  "dashboard": {
+    "settings": "Einstellungen",
+    "completeSetup": "Setup abschließen",
+    "completeSetupDescription": "Beende den Wizard, um alle Funktionen freizuschalten.",
+    "continueWizard": "Wizard fortsetzen",
+    "welcome": "Willkommen",
+    "welcomeSubtitle": "Was möchtest du heute erstellen?",
+    "autoModeDescription": "KI erstellt alles automatisch",
+    "diyModeDescription": "Schritt-für-Schritt Anleitungen",
+    "createNewVideo": "Neues Video erstellen",
+    "createNewVideoDescription": "Starte ein neues Video-Projekt mit KI-Unterstützung.",
+    "letsGo": "Los geht's",
+    "myVideos": "Meine Videos",
+    "myVideosDescription": "Alle deine Video-Projekte an einem Ort.",
+    "project": "Projekt",
+    "projects": "Projekte",
+    "analytics": "Analytics",
+    "analyticsDescription": "Verfolge die Performance deiner Videos.",
+    "yourProjects": "Deine Projekte",
+    "noProjects": "Noch keine Projekte",
+    "noProjectsDescription": "Erstelle dein erstes Video-Projekt, um loszulegen!",
+    "createFirstProject": "Erstes Projekt erstellen",
+    "yourChannel": "Dein Kanal",
+    "channelName": "Name",
+    "niche": "Nische",
+    "mode": "Modus",
+    "targetAudience": "Zielgruppe",
+    "videoDeleted": "Video wurde gelöscht",
+    "deleteError": "Fehler beim Löschen"
   }
 }

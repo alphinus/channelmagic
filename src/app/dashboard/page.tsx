@@ -21,6 +21,7 @@ import {
   Loader2
 } from "lucide-react";
 import Link from "next/link";
+import { toast } from "sonner";
 
 interface VideoProject {
   id: string;
@@ -66,9 +67,13 @@ export default function DashboardPage() {
 
       if (response.ok) {
         setVideos(videos.filter(v => v.id !== id));
+        toast.success(t('dashboard.videoDeleted'));
+      } else {
+        toast.error(t('dashboard.deleteError'));
       }
     } catch (error) {
       console.error('Failed to delete video:', error);
+      toast.error(t('dashboard.deleteError'));
     }
   };
 

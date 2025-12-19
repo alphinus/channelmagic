@@ -255,5 +255,35 @@
       "cta": "Save & Sign up",
       "skip": "Later"
     }
+  },
+  "dashboard": {
+    "settings": "Settings",
+    "completeSetup": "Complete Setup",
+    "completeSetupDescription": "Finish the wizard to unlock all features.",
+    "continueWizard": "Continue Wizard",
+    "welcome": "Welcome",
+    "welcomeSubtitle": "What would you like to create today?",
+    "autoModeDescription": "AI creates everything automatically",
+    "diyModeDescription": "Step-by-step guides",
+    "createNewVideo": "Create New Video",
+    "createNewVideoDescription": "Start a new video project with AI assistance.",
+    "letsGo": "Let's go",
+    "myVideos": "My Videos",
+    "myVideosDescription": "All your video projects in one place.",
+    "project": "Project",
+    "projects": "Projects",
+    "analytics": "Analytics",
+    "analyticsDescription": "Track the performance of your videos.",
+    "yourProjects": "Your Projects",
+    "noProjects": "No projects yet",
+    "noProjectsDescription": "Create your first video project to get started!",
+    "createFirstProject": "Create First Project",
+    "yourChannel": "Your Channel",
+    "channelName": "Name",
+    "niche": "Niche",
+    "mode": "Mode",
+    "targetAudience": "Target Audience",
+    "videoDeleted": "Video deleted",
+    "deleteError": "Error deleting video"
   }
 }
