@@ -1,0 +1,259 @@
+{
+  "common": {
+    "next": "Next",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "start": "Start",
+    "continue": "Continue",
+    "copy": "Copy",
+    "copied": "Copied!",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "free": "FREE",
+    "comingSoon": "Coming soon"
+  },
+  "landing": {
+    "hero": {
+      "title": "Your YouTube Channel on Autopilot",
+      "subtitle": "AI-generated videos, automatically published. From idea to upload in minutes.",
+      "cta": "Create Channel",
+      "ctaSecondary": "Watch Demo"
+    },
+    "features": {
+      "title": "How does ChannelMagic work?",
+      "auto": {
+        "title": "Auto Mode",
+        "description": "AI creates script, video and thumbnail. You just click 'Publish'."
+      },
+      "diy": {
+        "title": "DIY Mode",
+        "description": "Free step-by-step guides with generated prompts for external tools."
+      },
+      "multiPlatform": {
+        "title": "Multi-Platform",
+        "description": "One video, optimized for YouTube, TikTok and Instagram Reels."
+      }
+    },
+    "modes": {
+      "title": "Choose your path",
+      "auto": {
+        "title": "Fully Automated",
+        "badge": "With API Keys",
+        "description": "Script → Video → Upload in minutes",
+        "cost": "~$0.50-1.00 per video"
+      },
+      "diy": {
+        "title": "Do It Yourself",
+        "badge": "100% FREE",
+        "description": "Guides + prompts for free tools"
+      }
+    }
+  },
+  "wizard": {
+    "progress": "Step {current} of {total}",
+    "step1": {
+      "title": "Channel Setup",
+      "subtitle": "What should your channel be called?",
+      "nameLabel": "Channel Name",
+      "namePlaceholder": "e.g. TechTips with Max",
+      "nicheLabel": "Niche",
+      "nichePlaceholder": "Choose your niche",
+      "audienceLabel": "Target Audience (optional)",
+      "audiencePlaceholder": "e.g. Beginners in finance, 25-40 years"
+    },
+    "step2": {
+      "title": "Content Strategy",
+      "subtitle": "What do you want to create?",
+      "topicsLabel": "Topics",
+      "topicsPlaceholder": "Add topics (press Enter to confirm)",
+      "styleLabel": "Style",
+      "frequencyLabel": "How often?",
+      "styles": {
+        "educational": "Educational",
+        "entertaining": "Entertaining",
+        "inspirational": "Inspirational"
+      },
+      "frequencies": {
+        "daily": "Daily",
+        "2-3x-week": "2-3x per week",
+        "weekly": "Weekly"
+      }
+    },
+    "step3": {
+      "title": "Platforms",
+      "subtitle": "Where do you want to publish?",
+      "platforms": {
+        "youtube": "YouTube",
+        "tiktok": "TikTok",
+        "instagram": "Instagram Reels"
+      },
+      "hint": "You can select multiple. Your content will be automatically adapted."
+    },
+    "step4": {
+      "title": "Choose Mode",
+      "subtitle": "How do you want to work?",
+      "auto": {
+        "title": "Fully Automated",
+        "description": "AI creates everything for you",
+        "features": [
+          "AI script generation",
+          "Avatar videos with HeyGen",
+          "Automatic thumbnails",
+          "One-click publishing"
+        ],
+        "requires": "Requires: OpenRouter + HeyGen API Keys",
+        "cost": "Cost: ~$0.50-1.00 per video"
+      },
+      "diy": {
+        "title": "Do It Yourself",
+        "description": "Step-by-step guides",
+        "features": [
+          "Generated prompts to copy",
+          "Links to free tools",
+          "Detailed tutorials",
+          "Checklists for each step"
+        ],
+        "badge": "100% FREE",
+        "tools": "Tools: ChatGPT, CapCut, Canva"
+      }
+    },
+    "step5": {
+      "auto": {
+        "title": "API Setup",
+        "subtitle": "Connect your API keys",
+        "openrouter": {
+          "label": "OpenRouter API Key",
+          "help": "For script generation",
+          "link": "Get key"
+        },
+        "heygen": {
+          "label": "HeyGen API Key",
+          "help": "For avatar videos",
+          "link": "Get key"
+        },
+        "validate": "Validate keys",
+        "validating": "Validating...",
+        "valid": "Keys are valid!",
+        "invalid": "Invalid key"
+      },
+      "diy": {
+        "title": "Your Tools",
+        "subtitle": "Everything you need - for free",
+        "categories": {
+          "script": "Write script",
+          "video": "Create video",
+          "thumbnail": "Create thumbnail",
+          "voiceover": "Voiceover"
+        }
+      }
+    },
+    "step6": {
+      "title": "All set!",
+      "subtitle": "Your channel is configured",
+      "summary": {
+        "channel": "Channel",
+        "niche": "Niche",
+        "platforms": "Platforms",
+        "mode": "Mode",
+        "frequency": "Frequency"
+      },
+      "cta": "Create first video",
+      "ctaSecondary": "Go to Dashboard"
+    }
+  },
+  "niches": {
+    "fitness": "Fitness",
+    "finance": "Finance",
+    "gaming": "Gaming",
+    "cooking": "Cooking",
+    "tech": "Tech",
+    "lifestyle": "Lifestyle",
+    "education": "Education",
+    "music": "Music",
+    "business": "Business",
+    "travel": "Travel",
+    "other": "Other"
+  },
+  "diy": {
+    "workflow": {
+      "title": "DIY Workflow",
+      "step": "Step {number}",
+      "prompt": {
+        "title": "Your Prompt",
+        "copy": "Copy prompt",
+        "copied": "Copied! Now paste in ChatGPT."
+      },
+      "tools": {
+        "title": "Recommended Tools",
+        "free": "Free",
+        "freemium": "Freemium",
+        "trial": "Trial"
+      },
+      "tutorial": {
+        "title": "Video Tutorial",
+        "placeholder": "Tutorial coming soon!"
+      },
+      "checklist": {
+        "done": "Done"
+      }
+    },
+    "steps": {
+      "script": {
+        "title": "Create Script",
+        "description": "Copy the prompt and paste it into ChatGPT, Claude or Gemini."
+      },
+      "voiceover": {
+        "title": "Record Voiceover",
+        "description": "Read the script aloud or use an AI voice."
+      },
+      "video": {
+        "title": "Create Video",
+        "description": "Create your video with CapCut or Canva."
+      },
+      "thumbnail": {
+        "title": "Create Thumbnail",
+        "description": "Create an eye-catching thumbnail."
+      },
+      "upload": {
+        "title": "Upload",
+        "description": "Upload your video to your selected platforms."
+      }
+    }
+  },
+  "create": {
+    "title": "Create New Video",
+    "topic": {
+      "label": "What do you want to make a video about?",
+      "placeholder": "e.g. 5 Tips for Better Sleep"
+    },
+    "generate": "Generate",
+    "generating": "Generating..."
+  },
+  "assistant": {
+    "title": "Magic Assistant",
+    "tips": {
+      "step1": "A good channel name is short, memorable and describes your topic.",
+      "step2": "Choose 3-5 main topics you can regularly create content about.",
+      "step3": "Start with one platform and expand later.",
+      "step4": "DIY is perfect for learning, Auto saves time when scaling.",
+      "step5auto": "Keep your API keys safe and never share them.",
+      "step5diy": "All recommended tools have free versions.",
+      "step6": "Ready! Your first video is just one click away."
+    }
+  },
+  "auth": {
+    "login": "Log in",
+    "signup": "Sign up",
+    "logout": "Log out",
+    "email": "Email",
+    "password": "Password",
+    "savePrompt": {
+      "title": "Save project?",
+      "description": "Create a free account to save your project.",
+      "cta": "Save & Sign up",
+      "skip": "Later"
+    }
+  }
+}
