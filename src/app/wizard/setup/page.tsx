@@ -8,16 +8,72 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ToolCard } from "@/components/diy/ToolCard";
 import { diyTools } from "@/lib/diy/tools";
-import { ArrowLeft, ExternalLink, Key } from "lucide-react";
+import { ArrowLeft, ExternalLink, Key, CheckCircle2, XCircle, Loader2 } from "lucide-react";
 
 function AutoSetup() {
   const { apiKeys, setApiKey } = useAppStore();
   const [openrouterKey, setOpenrouterKey] = useState(apiKeys.openrouter || "");
   const [heygenKey, setHeygenKey] = useState(apiKeys.heygen || "");
 
-  const handleSaveKeys = () => {
-    setApiKey("openrouter", openrouterKey);
-    setApiKey("heygen", heygenKey);
+  // Validation states
+  const [openrouterValidating, setOpenrouterValidating] = useState(false);
+  const [openrouterValidated, setOpenrouterValidated] = useState(false);
+  const [openrouterError, setOpenrouterError] = useState<string | null>(null);
+
+  const [heygenValidating, setHeygenValidating] = useState(false);
+  const [heygenValidated, setHeygenValidated] = useState(false);
+  const [heygenError, setHeygenError] = useState<string | null>(null);
+
+  const handleValidateOpenRouter = async () => {
+    setOpenrouterValidating(true);
+    setOpenrouterError(null);
+
+    try {
+      const response = await fetch('/api/validate/openrouter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: openrouterKey }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setOpenrouterValidated(true);
+        setApiKey("openrouter", openrouterKey);
+      } else {
+        setOpenrouterError(data.error || 'Ungültiger API-Schlüssel');
+      }
+    } catch (error) {
+      setOpenrouterError('Validierung fehlgeschlagen');
+    } finally {
+      setOpenrouterValidating(false);
+    }
+  };
+
+  const handleValidateHeyGen = async () => {
+    setHeygenValidating(true);
+    setHeygenError(null);
+
+    try {
+      const response = await fetch('/api/validate/heygen', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ apiKey: heygenKey }),
+      });
+
+      const data = await response.json();
+
+      if (data.valid) {
+        setHeygenValidated(true);
+        setApiKey("heygen", heygenKey);
+      } else {
+        setHeygenError(data.error || 'Ungültiger API-Schlüssel');
+      }
+    } catch (error) {
+      setHeygenError('Validierung fehlgeschlagen');
+    } finally {
+      setHeygenValidating(false);
+    }
   };
 
   const isValid = openrouterKey.trim() !== "" && heygenKey.trim() !== "";
@@ -55,14 +111,43 @@ function AutoSetup() {
               API-Key erstellen <ExternalLink className="w-3 h-3" />
             </a>
           </div>
-          <Input
-            id="openrouter-key"
-            type="password"
-            placeholder="sk-or-v1-..."
-            value={openrouterKey}
-            onChange={(e) => setOpenrouterKey(e.target.value)}
-            className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 font-mono text-sm"
-          />
+          <div className="flex gap-2">
+            <Input
+              id="openrouter-key"
+              type="password"
+              placeholder="sk-or-v1-..."
+              value={openrouterKey}
+              onChange={(e) => {
+                setOpenrouterKey(e.target.value);
+                setOpenrouterValidated(false);
+                setOpenrouterError(null);
+              }}
+              className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 font-mono text-sm"
+            />
+            <Button
+              onClick={handleValidateOpenRouter}
+              disabled={!openrouterKey.trim() || openrouterValidating}
+              variant="outline"
+              size="sm"
+              className="border-zinc-700 hover:border-purple-500 hover:bg-purple-500/10"
+            >
+              {openrouterValidating && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+              {openrouterValidated && !openrouterValidating && <CheckCircle2 className="w-4 h-4 mr-1 text-green-400" />}
+              {openrouterValidating ? "Prüfe..." : openrouterValidated ? "Gültig" : "Prüfen"}
+            </Button>
+          </div>
+          {openrouterError && (
+            <div className="flex items-center gap-2 mt-2 text-xs text-red-400">
+              <XCircle className="w-3 h-3" />
+              {openrouterError}
+            </div>
+          )}
+          {openrouterValidated && !openrouterError && (
+            <div className="flex items-center gap-2 mt-2 text-xs text-green-400">
+              <CheckCircle2 className="w-3 h-3" />
+              API-Schlüssel ist gültig und wurde gespeichert
+            </div>
+          )}
           <p className="text-xs text-zinc-500 mt-1">
             Für KI-gestützte Skripterstellung und Content-Generierung
           </p>
@@ -83,32 +168,53 @@ function AutoSetup() {
               API-Key erstellen <ExternalLink className="w-3 h-3" />
             </a>
           </div>
-          <Input
-            id="heygen-key"
-            type="password"
-            placeholder="..."
-            value={heygenKey}
-            onChange={(e) => setHeygenKey(e.target.value)}
-            className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 font-mono text-sm"
-          />
+          <div className="flex gap-2">
+            <Input
+              id="heygen-key"
+              type="password"
+              placeholder="..."
+              value={heygenKey}
+              onChange={(e) => {
+                setHeygenKey(e.target.value);
+                setHeygenValidated(false);
+                setHeygenError(null);
+              }}
+              className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 font-mono text-sm"
+            />
+            <Button
+              onClick={handleValidateHeyGen}
+              disabled={!heygenKey.trim() || heygenValidating}
+              variant="outline"
+              size="sm"
+              className="border-zinc-700 hover:border-purple-500 hover:bg-purple-500/10"
+            >
+              {heygenValidating && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+              {heygenValidated && !heygenValidating && <CheckCircle2 className="w-4 h-4 mr-1 text-green-400" />}
+              {heygenValidating ? "Prüfe..." : heygenValidated ? "Gültig" : "Prüfen"}
+            </Button>
+          </div>
+          {heygenError && (
+            <div className="flex items-center gap-2 mt-2 text-xs text-red-400">
+              <XCircle className="w-3 h-3" />
+              {heygenError}
+            </div>
+          )}
+          {heygenValidated && !heygenError && (
+            <div className="flex items-center gap-2 mt-2 text-xs text-green-400">
+              <CheckCircle2 className="w-3 h-3" />
+              API-Schlüssel ist gültig und wurde gespeichert
+            </div>
+          )}
           <p className="text-xs text-zinc-500 mt-1">
             Für KI-Avatar-Videos und Sprachgenerierung
           </p>
         </div>
 
-        <Button
-          onClick={handleSaveKeys}
-          disabled={!isValid}
-          variant="outline"
-          className="w-full border-zinc-700 hover:border-purple-500 hover:bg-purple-500/10"
-        >
-          Schlüssel speichern
-        </Button>
-
-        {isValid && (
+        {openrouterValidated && heygenValidated && (
           <div className="bg-green-500/10 border border-green-500/20 rounded-lg p-3">
-            <p className="text-sm text-green-400">
-              API-Schlüssel wurden gespeichert. Du kannst jetzt fortfahren.
+            <p className="text-sm text-green-400 flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4" />
+              Beide API-Schlüssel sind gültig und wurden gespeichert. Du kannst jetzt fortfahren.
             </p>
           </div>
         )}
